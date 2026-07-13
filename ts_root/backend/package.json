@@ -1,0 +1,20 @@
+{
+	"name": "backend",
+	"version": "0.1.0",
+	"description": "Content Generator backend server",
+	"license": "ISC",
+	"type": "module",
+	"main": "dist/server.js",
+	"scripts": {
+		"build": "tsc",
+		"dev": "node dist/server.js",
+		"start": "node dist/server.js"
+	},
+	"devDependencies": {
+		"@types/node": "26.1.1",
+		"typescript": "7.0.2"
+	},
+	"dependencies": {
+		"uWebSockets.js": "https://github.com/uNetworking/uWebSockets.js/archive/v20.69.0.tar.gz"
+	}
+}
