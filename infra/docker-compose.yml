@@ -1,0 +1,31 @@
+services:
+  backend:
+    build:
+      context: ../ts_root/backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../ts_root/backend/src:/app/src
+      - ../ts_root/backend/tsconfig.json:/app/tsconfig.json:ro
+      - backend_node_modules:/app/node_modules
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  frontend:
+    build:
+      context: ../ts_root/frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../ts_root/frontend:/app
+      - frontend_node_modules:/app/node_modules
+
+volumes:
+  backend_node_modules:
+  frontend_node_modules:

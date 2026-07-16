@@ -1,0 +1,22 @@
+services:
+  backend:
+    build:
+      context: ../ts_root/backend
+      dockerfile: Dockerfile_prod
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  frontend:
+    build:
+      context: ../ts_root/frontend
+      dockerfile: Dockerfile_prod
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
