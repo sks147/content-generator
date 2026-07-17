@@ -1,17 +1,15 @@
-
-@import "tailwindcss";
+@import '@mantine/core/styles.css';
+@import 'tailwindcss';
 
 * {
   box-sizing: border-box;
 }
 
 html,
-body,
-#app {
+body {
   min-height: 100%;
 }
 
 body {
   margin: 0;
 }
-

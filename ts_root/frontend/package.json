@@ -13,6 +13,9 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@mantine/core": "9.4.1",
+    "@mantine/form": "9.4.1",
+    "@mantine/hooks": "9.4.1",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-devtools": "latest",
     "@tanstack/react-router": "latest",
@@ -21,8 +24,12 @@
     "@tanstack/react-start": "latest",
     "@tanstack/router-plugin": "^1.132.0",
     "lucide-react": "^0.545.0",
+    "postcss": "8.5.19",
+    "postcss-preset-mantine": "1.18.0",
+    "postcss-simple-vars": "7.0.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "shared": "file:../shared",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {

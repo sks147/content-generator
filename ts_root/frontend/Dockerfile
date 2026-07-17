@@ -1,11 +1,14 @@
 FROM node:26.5.0-slim
 
-WORKDIR /app
-
-COPY package.json package-lock.json ./
+WORKDIR /shared
+COPY shared/package.json shared/package-lock.json ./
 RUN npm ci
 
-COPY docker-entrypoint.sh /usr/local/bin/
+WORKDIR /app
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+
+COPY frontend/docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 5173

@@ -72,13 +72,18 @@ services:
 
   frontend:
     build:
-      context: ../ts_root/frontend
-      dockerfile: Dockerfile
+      context: ../ts_root
+      dockerfile: frontend/Dockerfile
     ports:
       - "5173:5173"
     volumes:
       - ../ts_root/frontend:/app
+      - ../ts_root/shared/src:/shared/src
+      - ../ts_root/shared/dist:/shared/dist
+      - ../ts_root/shared/package.json:/shared/package.json:ro
+      - ../ts_root/shared/tsconfig.json:/shared/tsconfig.json:ro
       - frontend_node_modules:/app/node_modules
+      - shared_node_modules:/shared/node_modules
 
 volumes:
   pgdata:

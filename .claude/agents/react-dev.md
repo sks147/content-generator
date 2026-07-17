@@ -2,7 +2,7 @@
 name: react-dev
 description: Implements features, fixes bugs, writes unit tests for frontend. 
 color: blue
-tools: [Read, Write, Edit, Glob, Grep, Bash]
+tools: [Read, Write, Edit, Glob, Grep, Bash, Skill]
 triggers: When working on typescript files inside `ts_root/frontend` directory
 model: opus
 ---
