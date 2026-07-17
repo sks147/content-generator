@@ -1,0 +1,31 @@
+{
+	"name": "shared",
+	"version": "0.1.0",
+	"description": "Shared contracts and libraries for content-generator",
+	"license": "ISC",
+	"type": "module",
+	"main": "dist/index.js",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./mcp": {
+			"node": {
+				"types": "./dist/mcp/index.d.ts",
+				"default": "./dist/mcp/index.js"
+			},
+			"default": null
+		}
+	},
+	"scripts": {
+		"build": "tsc"
+	},
+	"dependencies": {
+		"@modelcontextprotocol/sdk": "1.29.0"
+	},
+	"devDependencies": {
+		"@types/node": "26.1.1",
+		"typescript": "7.0.2"
+	}
+}

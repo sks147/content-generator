@@ -1,11 +1,54 @@
 services:
+  postgres:
+    image: postgres:18.4
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${PGDATABASE:-content_generator}
+      POSTGRES_USER: ${PGUSER:-postgres}
+      POSTGRES_PASSWORD: ${PGPASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PGUSER:-postgres} -d ${PGDATABASE:-content_generator}"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  mcp-server:
+    build:
+      context: ../ts_root/mcp_servers
+      dockerfile: Dockerfile_prod
+    restart: unless-stopped
+    environment:
+      LLM_BASE_URL: ${LLM_BASE_URL}
+      LLM_MODEL: ${LLM_MODEL:-Qwen3-4B-MLX-4bit}
+      LLM_API_KEY: ${LLM_API_KEY:-not-needed}
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3001/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
   backend:
     build:
-      context: ../ts_root/backend
-      dockerfile: Dockerfile_prod
+      context: ../ts_root
+      dockerfile: backend/Dockerfile_prod
     ports:
       - "3000:3000"
     restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mcp-server:
+        condition: service_healthy
+    environment:
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGDATABASE: ${PGDATABASE:-content_generator}
+      PGUSER: ${PGUSER:-postgres}
+      PGPASSWORD: ${PGPASSWORD}
+      MCP_SERVER_URL: http://mcp-server:3001
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
       interval: 30s
@@ -20,3 +63,6 @@ services:
     ports:
       - "5173:5173"
     restart: unless-stopped
+
+volumes:
+  pgdata:

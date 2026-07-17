@@ -1,14 +1,68 @@
 services:
-  backend:
+  postgres:
+    image: postgres:18.4
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    environment:
+      POSTGRES_DB: content_generator
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: pass
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d content_generator"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mcp-server:
     build:
-      context: ../ts_root/backend
+      context: ../ts_root/mcp_servers
       dockerfile: Dockerfile
     ports:
+      - "3001:3001"
+    environment:
+      LLM_BASE_URL: http://host.docker.internal:11434/v1
+      LLM_MODEL: Qwen3-4B-MLX-4bit
+      LLM_API_KEY: not-needed
+    volumes:
+      - ../ts_root/mcp_servers/src:/app/src
+      - ../ts_root/mcp_servers/tsconfig.json:/app/tsconfig.json:ro
+      - mcp_servers_node_modules:/app/node_modules
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3001/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  backend:
+    build:
+      context: ../ts_root
+      dockerfile: backend/Dockerfile
+    ports:
       - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mcp-server:
+        condition: service_healthy
+    environment:
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGDATABASE: content_generator
+      PGUSER: root
+      PGPASSWORD: pass
+      MCP_SERVER_URL: http://mcp-server:3001
     volumes:
       - ../ts_root/backend/src:/app/src
       - ../ts_root/backend/tsconfig.json:/app/tsconfig.json:ro
+      - ../ts_root/shared/src:/shared/src
+      - ../ts_root/shared/tsconfig.json:/shared/tsconfig.json:ro
       - backend_node_modules:/app/node_modules
+      - shared_node_modules:/shared/node_modules
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
       interval: 10s
@@ -27,5 +81,8 @@ services:
       - frontend_node_modules:/app/node_modules
 
 volumes:
+  pgdata:
   backend_node_modules:
   frontend_node_modules:
+  mcp_servers_node_modules:
+  shared_node_modules:

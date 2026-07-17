@@ -2,6 +2,7 @@ import uWebSockets from 'uWebSockets.js';
 import config from './config/config.json' with { type: 'json' };
 import * as securityMiddleware from './middleware/security.ts';
 import { setupRoutes } from './routes/index.ts';
+import { initializeSchema } from './db/schema.ts';
 
 const app = uWebSockets.App();
 
@@ -17,6 +18,9 @@ setupRoutes(app);
 async function startServer() {
 	console.log(`\nStarting ${config.serviceName} server...`);
 	console.log('='.repeat(50));
+
+	await initializeSchema();
+	console.log('Database schema initialized');
 
 	app.listen(port, (listenSocket) => {
 		if (listenSocket) {

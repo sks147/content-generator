@@ -1,0 +1,11 @@
+## How to write code
+- Use pinned dependencies everywhere
+- Modular code
+- Separate files for separate react components
+- Good file structure for react project
+- Code has low cyclomatic complexity (minimal nesting level, early returns, named booleans)
+- Code follows best functional coding patterns
+- Errors and edge cases handled
+- No secrets or credentials hardcoded
+- Logging added where appropriate
+- Strict schema validations

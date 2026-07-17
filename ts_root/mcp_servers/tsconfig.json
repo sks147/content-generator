@@ -7,9 +7,6 @@
 		"lib": ["esnext"],
 		"types": ["node"],
 		"strict": true,
-		"composite": true,
-		"declaration": true,
-		"declarationMap": true,
 		"verbatimModuleSyntax": true,
 		"isolatedModules": true,
 		"moduleDetection": "force",
@@ -22,6 +19,5 @@
 		"preserveConstEnums": true,
 		"noUncheckedIndexedAccess": true
 	},
-	"include": ["src/**/*", "src/config/config.json"],
-	"references": [{ "path": "../shared" }]
+	"include": ["src/**/*"]
 }
